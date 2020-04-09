@@ -1,10 +1,29 @@
 # WebPuzac
 A tool for webcrawling
 
-This program is capable of searching specified information from a website or mapping website links
-With certain modification it can also be capable of gathering links for a web browser or search the net itself for a specified phrase, code or something else
+*Current code info:*
 
-Along with that this program is (will be) open source so you can use it as a platform for further modofication
-Be careful with webcrawling on social networks because if you do that, you are putting yourself in a position where you can be sued by owners of the social networks for scraping their data (more info on that when i release).
+The program is capable of looking at any url you give it and scraping all the links on that page. For now that all it is capable of.
 
-Aside from that have fun with it (when i release it ofc)
+
+*Next update:*
+
+Adding a user interaction so that you can input the url into the program and start scraping from a given url instead of having to change the starting url in the code. 
+When a crawler ends its link search you will be able to tell it which of given links it will jump to next
+
+
+*Very important stuff:*
+
+This program is open source so you can use it as a platform for further modofication
+Be careful with webcrawling on social networks because if you do that, you are putting yourself in a position where you can be sued by owners of the social networks for scraping their data.
+More on that here: https://benbernardblog.com/web-scraping-and-crawling-are-perfectly-legal-right/
+
+
+*How to run it?*
+
+The program requests a few pip install
+To do that open command prompt and type: pip install bs4
+BeautifulSoup (bs4) is a HTML parser used to convert website info to HTML
+
+
+Thats all for now folks
