@@ -7,6 +7,8 @@ The program is capable of looking at any url you give it and scraping all the li
 After that it gives you a choice on what link you want to scrape next or you can tell it to choose itself. 
 For now that all it is capable of.
 
+Any code help is highly appreciated!
+
 *Last update:*
 
 Added console animations, help command, and fixed a few major bugs. Added an URL checker. 
