@@ -22,10 +22,13 @@ More on that here: https://benbernardblog.com/web-scraping-and-crawling-are-perf
 
 *Before running a program:*
 
-The program requies a pip install, to do that open command prompt and type: pip install bs4
+The program requies a few packages, to do that open command prompt and type: 
 
-BeautifulSoup (bs4) is a HTML parser used to convert website info to HTML
-After you have installed what you need, you should go to the source code and change the value of the my_url variable to the url you want to scrape.
+pip install bs4
+
+pip install urllib3
+
+pip install requests
 
 
 *How to run a program?*
