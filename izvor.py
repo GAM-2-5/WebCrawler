@@ -7,14 +7,12 @@ import time
 
 
 
-################################################################################
-#Url kod
-
-links = set({})
+#----------------------------------------Url--------------------------------------------
 
 #funkcija koja će biti korištena za ekstrakciju linka
-def url_extractor (my_url, automode):
-
+def url_extractor (my_url):
+	global links
+	
 	secure = ""    #dio linka sa http ili https
 	source = ""    #source link (tipa www.google.com)
 	pagedown = ""  #link jednu stranicu ispod trenutnog linka
@@ -87,27 +85,31 @@ def url_extractor (my_url, automode):
 		
 		links.add(unformat)
 
-	url_picker(automode)
+	url_picker()
 	return
 
 
 #Odabir sljedećega linka
-def url_picker (automode):
+def url_picker ():
+	global automode
+	global repeat
+
+	#Za automode
 	if automode == 1:
+		#Odabiranje nasumičnog linka
 		tekst = random.choice(tuple(links))
 		my_url = str(tekst)
 		
+		#provjera postojanja
 		postoji = url_checker(my_url)
 		
 		if postoji == 1:
-			global repeat
-
 			if repeat > 0:
-				url_extractor(my_url, automode)
 				repeat -= 1
-			
+				url_extractor(my_url)
+				
 			else:
-				print("Want to see the list? (y/n)")
+				print("\nWant to see the list? (y/n)")
 				c = Question(0)
 			
 				if c == 1:
@@ -118,36 +120,39 @@ def url_picker (automode):
 				else:
 					pass
 			
-				print("Proceed? (y/n)")
+				print("\nProceed? (y/n)")
 				c = Question(0)
 			
 				if c == 1:
 					return	
-					url_extractor(my_url, automode)
+					url_extractor(my_url)
 			
 				else:
-					print ("Switch to manual? (y/n)")
+					print ("\nSwitch to manual? (y/n)")
 					a = Question(0)
 					
 					if a == 1:
-						print("\n Converting the list...")
+						print("\nConverting the list...")
 						time.sleep(0.2)
 						print("Switching to manual... \n")
 						time.sleep(0.2)
 						
 						automode = 0
-						url_picker(automode)
+						url_picker()
 						return
 					
 					else:
 						pass
 					return
 		else:
-			url_picker(automode)
+			url_picker()
 			return
 
+	#Bez automodea
 	else:
-		#odabiranje linka
+		#Odabiranje linka
+		line_breaker(40)
+
 		lista = list(links)
 		i = 0
 		print("Links:")
@@ -155,69 +160,111 @@ def url_picker (automode):
 			i += 1
 			print(i,": ", link)
 		
-		print("Proceed? (y/n)")
+		print("\nProceed? (y/n)")
 		
 		c = Question(0)
 		if c == 1:
-			print("Enter the number of a link you want me to go to next")
+			print("\nEnter the number of a link you want me to go to next")
 			my_url = lista[int(input())-1]
-			url_extractor (my_url, automode)
+			url_extractor (my_url)
 			return
 		
 		else:
-			print ("Switch to auto? (y/n)")
+			print ("\nSwitch to automode? (y/n)")
 			a = Question(0)
 			if a == 1:
 				print("\n")
 				print("Converting the list...")
 				time.sleep(0.7)
-				print("Switching to auto...")
+				print("Switching to automode...")
 				print("\n")
 				time.sleep(0.7)
 				print("\n")
-				
-				automode = 0
-				url_picker(automode)
+
+				Repeater()
+
+				automode = 1
+				url_picker()
 				return
 			
 			else:
 				pass
 			return
 
+#----------------------------------------Misc--------------------------------------------
 
 #Provjera linka
 def url_checker (link):
 	request = requests.get(link)
 	if request.status_code < 400:
-	  return 1  
+		return 1  
 	else:
 		return 0
 
+#Funkcija za kratice (dodavat ću ih kasnije, ovo su sada samo da nemoram ja svaki put pisat cijeli link dok testiram)
+def url_shortcut (tekst):
+	tekst.lower()
+	
+	if tekst == "help":
+		Help()
+		tekst = "0"
 
+	elif tekst == "":
+		tekst = "0"
+	
+	elif tekst == "google":
+		tekst = "https://www.google.com"
+	
+	elif tekst == "youtube":
+		tekst = "https://www.youtube.com"
 
-######################################################################################
-######################################################################################
-#Animation related stvari
+	return tekst
+
+#Funkcija za unos linka
+def url_inserter ():
+	line_breaker(40)
+
+	#Unos i obrada linka
+	print("Insert URL:\n")
+
+	tekst = str(input())
+	tekst = tekst.strip()
+	tekst = url_shortcut(tekst)
+
+	if tekst == "0":
+		tekst = url_inserter()
+	
+	return tekst
+
+#--------------------------------------Animation-----------------------------------------
 
 #3 dots console animation
-def console_dots (duration, lb_duljina):
-	duration = duration - 0.5
-	time.sleep(0.5)
+def console_dots (duration):
+	global animation
 	
-	#definiranje animacije
-	length = int(duration / 1.5)
-	
-	#1,5 sekunde za jedan krug
-	for y in range(length):
-		for x in range(3):
-			print('.', end = '', flush = True)
-			time.sleep (1/3)
-		for x in range(3):
+	if animation == 1:
+		duration = duration - 0.5
+		time.sleep(0.5)
+		
+		#definiranje animacije
+		length = int(duration / 1.5)
+		
+		#2 sekunde za jedan krug
+		for y in range(length):
 			clear()
-			print('.' * (3 - x))
-	clear ()
-	print ("\n")
-	line_breaker (lb_duljina)
+			time.sleep(0.5)
+			for x in range(3):
+				print('.', end = '', flush = True)
+				time.sleep (1/3)
+			'''
+			Dio animacije koji mi se prije sviđao ali sad smatram da je nepotrebno loš
+
+			for x in range(3):
+				clear()
+				print('.' * (2 - x), end = '', flush = True)
+				time.sleep(1/3)
+			'''
+
 
 #Clear screen funkcija
 def clear(): 
@@ -231,22 +278,25 @@ def clear():
 
 #Crta
 def line_breaker (duljina):
-	
-	sleeptime = 0.000625 * duljina
+	global animation
+
+	print("\n")
+	sleeptime = 0.000625 * duljina * animation
 
 	for x in range(duljina):
 		print('-', end = '', flush = True)
 		time.sleep(sleeptime)
+	
 	print("\n")
 
 
-
-######################################################################################
-#Text stvari
+#---------------------------------------Tekst------------------------------------------
 
 #Help function
 def Help ():
-	console_dots(3.5, 40)
+	console_dots(3.5)
+	line_breaker(40)
+	
 	print("\r\nHelp tab:")
 	print("\nChoose an option")
 	print("0: Automode and Manual mode explained")
@@ -260,14 +310,15 @@ def Help ():
 
 	if mode == 0:
 		print("\nManual mode allows you to choose which links I will go to while scraping")
-		time.sleep(3)
+		time.sleep(2)
 		print("Auto mode makes me run autonomously, and choose randomly which links i want to go to")
-		time.sleep(3)
+		time.sleep(2.5)
 		print("You can change between modes whenever you want, by telling me to stop")
-		time.sleep(3)
-		print("If i am in auto, you can type 'stop' or 'halt' and i will stop")
-		time.sleep(3)
+		#time.sleep(3)
+		#print("If i am in auto, you can type 'stop' or 'halt' and i will stop")			Ne zasad
+		time.sleep(2)
 		print("After you do that it will ask you if you want to switch to the other mode")
+		time.sleep(2.5)
 
 	if mode == 1:
 		print("\nYou have to insert a link that I will start scraping from")
@@ -280,33 +331,37 @@ def Help ():
 		time.sleep(3)
 		print("If you write it wrong I will run into errors and halt")
 
-	print("\r\nEnd of the help line, thanks for listening\n")
+	print("\r\nEnd of the help line\n")
 	return
 
 
 #Automode alert
 def AutoAlert ():
-	print("\nYou are about to atart automode, during that preiod, the program could wander anywhere over the internet")
-	print ("if you say yes, you are taking all the responsibility on what happenes during that time, do you agree to that?\n")
+	print("\nYou are about to atart automode, during that preiod, the program could wander anywhere over the internet, if")
+	print ("you say yes, you are taking all the responsibility on what happenes during that time, do you agree to that? (y/n)\n")
 	c = Question(0)
 	if c == 1:
 		return 1
 	else:
+		print("\nSwitching to manual...\n")
+		time.sleep(0.5)
 		return 0
 
 #Automode repeater
 def Repeater ():
-	print ("\nHow many links do you want the automode to visit?\n")
+	global repeat
+
+	print ("\nHow many links do you want the automode to visit?")
 	c = input()
 	c = c.strip()
 	c = c.lower()
 	if c == 'help':
 		Help()
-		f = Repeater()
-		return f
+		Repeater()
+	
 	else:
-		rpt = int(c)
-		return rpt
+		repeat = int(c)
+		
 
 #Yes/No pitanja
 def Question (mode):
@@ -349,24 +404,31 @@ def Question (mode):
 
 
 
-######################################################################################
-#program starter
-console_dots(6.5, 80)
-print("Do you want the program to run the program manually, or in automode? (m/a)\n")
-auto = Question(1)
+#--------------------------------------Program-------------------------------------------
 
-if auto == 1:
-	auto = AutoAlert()
+repeat = int(0)
+links = set({})
 
-if auto == 1:
-	repeat = Repeater()
+#Brze ili fancy animacije
+print('\nToggle animations? (y/n)')
+animation = Question(0)
 
-console_dots(3.5, 40)
-print("Insert URL:\n")
+#Animacija učitavanja konzole
+console_dots(6.5)
+clear()
+line_breaker(80)
 
-tekst = str(input())
-tekst = tekst.strip()
+#Odabir načina rada
+print("Do you want the program to run the program manually, or in automode? (m/a)")
+automode = Question(1)
 
-url_extractor(tekst, auto)
+if automode == 1:
+	automode = AutoAlert()
 
-######################################################################################
+if automode == 1:
+	Repeater()
+
+tekst = url_inserter()
+url_extractor(tekst)
+
+#-------------------------------------------------------------------------------------
