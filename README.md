@@ -17,7 +17,6 @@ More on that here: https://benbernardblog.com/web-scraping-and-crawling-are-perf
 
 
 *Before running a program:*
-
  The program requies a few packages, to install them, open command prompt and type: 
 
 pip install bs4
