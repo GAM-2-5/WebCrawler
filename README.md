@@ -1,7 +1,6 @@
-# WebPuzac
-A tool for webcrawling
+# WebCrawler
+A webcrawlig tool (obviously)
 
-*Info:*
  The program is capable of looking at any url you give it and scraping all the links on that page and keeps scraping links on other pages it found.
 
 *Last update:*
