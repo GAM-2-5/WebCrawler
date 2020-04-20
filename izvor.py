@@ -1,10 +1,10 @@
-from urllib.request import urlopen as uReq #pip
-from bs4 import BeautifulSoup as Soup #pip
+from urllib.request import urlopen as uReq    #pip
+from colorama import init, Fore, Style        #pip
+from bs4 import BeautifulSoup as Soup         #pip
 from os import system, name 
-import requests #pip
+from time import sleep
+import requests                               #pip
 import random
-import time
-
 
 
 #----------------------------------------Url--------------------------------------------
@@ -109,13 +109,14 @@ def url_picker ():
 				url_extractor(my_url)
 				
 			else:
+				line_breaker(40)
 				print("\nWant to see the list? (y/n)")
 				c = Question(0)
 			
 				if c == 1:
-					print("Links:")
+					print("\nLinks:\n")
 					for link in links:
-						print(link)
+						print("   ", link)
 			
 				else:
 					pass
@@ -124,8 +125,8 @@ def url_picker ():
 				c = Question(0)
 			
 				if c == 1:
-					return	
 					url_extractor(my_url)
+					return
 			
 				else:
 					print ("\nSwitch to manual? (y/n)")
@@ -133,9 +134,9 @@ def url_picker ():
 					
 					if a == 1:
 						print("\nConverting the list...")
-						time.sleep(0.2)
+						sleep(0.2)
 						print("Switching to manual... \n")
-						time.sleep(0.2)
+						sleep(0.2)
 						
 						automode = 0
 						url_picker()
@@ -165,7 +166,9 @@ def url_picker ():
 		c = Question(0)
 		if c == 1:
 			print("\nEnter the number of a link you want me to go to next")
+			print(Fore.YELLOW, end = ' ')
 			my_url = lista[int(input())-1]
+			print(Fore.GREEN, end = '')
 			url_extractor (my_url)
 			return
 		
@@ -173,14 +176,11 @@ def url_picker ():
 			print ("\nSwitch to automode? (y/n)")
 			a = Question(0)
 			if a == 1:
-				print("\n")
-				print("Converting the list...")
-				time.sleep(0.7)
-				print("Switching to automode...")
-				print("\n")
-				time.sleep(0.7)
-				print("\n")
+				print("\nConverting the list...")
+				sleep(0.7)
+				print("Switching to automode...\n")
 
+				line_breaker(40)
 				Repeater()
 
 				automode = 1
@@ -190,6 +190,7 @@ def url_picker ():
 			else:
 				pass
 			return
+
 
 #----------------------------------------Misc--------------------------------------------
 
@@ -205,17 +206,17 @@ def url_checker (link):
 def url_shortcut (tekst):
 	tekst.lower()
 	
-	if tekst == "help":
+	if tekst.lower() == "help":
 		Help()
 		tekst = "0"
 
 	elif tekst == "":
 		tekst = "0"
 	
-	elif tekst == "google":
+	elif tekst.lower() == "google":
 		tekst = "https://www.google.com"
 	
-	elif tekst == "youtube":
+	elif tekst.lower() == "youtube":
 		tekst = "https://www.youtube.com"
 
 	return tekst
@@ -226,15 +227,19 @@ def url_inserter ():
 
 	#Unos i obrada linka
 	print("Insert URL:\n")
+	print(Fore.RED, end = ' ')
 
 	tekst = str(input())
 	tekst = tekst.strip()
 	tekst = url_shortcut(tekst)
 
+	print(Fore.GREEN, end = '')
+
 	if tekst == "0":
 		tekst = url_inserter()
 	
 	return tekst
+
 
 #--------------------------------------Animation-----------------------------------------
 
@@ -244,7 +249,7 @@ def console_dots (duration):
 	
 	if animation == 1:
 		duration = duration - 0.5
-		time.sleep(0.5)
+		sleep(0.5)
 		
 		#definiranje animacije
 		length = int(duration / 1.5)
@@ -252,17 +257,17 @@ def console_dots (duration):
 		#2 sekunde za jedan krug
 		for y in range(length):
 			clear()
-			time.sleep(0.5)
+			sleep(0.5)
 			for x in range(3):
 				print('.', end = '', flush = True)
-				time.sleep (1/3)
+				sleep (1/3)
 			'''
 			Dio animacije koji mi se prije sviđao ali sad smatram da je nepotrebno loš
 
 			for x in range(3):
 				clear()
 				print('.' * (2 - x), end = '', flush = True)
-				time.sleep(1/3)
+				sleep(1/3)
 			'''
 
 
@@ -280,14 +285,16 @@ def clear():
 def line_breaker (duljina):
 	global animation
 
-	print("\n")
+	print(Style.RESET_ALL)
+	print(Fore.GREEN)
+
 	sleeptime = 0.000625 * duljina * animation
 
 	for x in range(duljina):
 		print('-', end = '', flush = True)
-		time.sleep(sleeptime)
+		sleep(sleeptime)
 	
-	print("\n")
+	print(Style.DIM, "\n")
 
 
 #---------------------------------------Tekst------------------------------------------
@@ -299,37 +306,39 @@ def Help ():
 	
 	print("\r\nHelp tab:")
 	print("\nChoose an option")
+	
 	print("0: Automode and Manual mode explained")
 	print("1: URL inserting help")
+	
 	print("\nChoose an option:")
 
+	print(Fore.YELLOW, end = ' ')
 	mode = int(input())
+	print(Fore.GREEN, end = '')
 
 	print("\nLoading...")
-	time.sleep(1.5)
+	sleep(1.5)
 
 	if mode == 0:
-		print("\nManual mode allows you to choose which links I will go to while scraping")
-		time.sleep(2)
-		print("Auto mode makes me run autonomously, and choose randomly which links i want to go to")
-		time.sleep(2.5)
-		print("You can change between modes whenever you want, by telling me to stop")
-		#time.sleep(3)
-		#print("If i am in auto, you can type 'stop' or 'halt' and i will stop")			Ne zasad
-		time.sleep(2)
-		print("After you do that it will ask you if you want to switch to the other mode")
-		time.sleep(2.5)
+		print("\n Manual mode allows you to choose which links I will go to while scraping")
+		sleep(2)
+		print(" Auto mode makes me run autonomously, and choose randomly which links i want to go to")
+		sleep(2.5)
+		print(" You can change between modes whenever you want, by telling me to stop")
+		sleep(2)
+		print(" After you do that it will ask you if you want to switch to the other mode")
+		sleep(2.5)
 
 	if mode == 1:
-		print("\nYou have to insert a link that I will start scraping from")
-		time.sleep(3)
-		print("When you write the link you must write it whole")
-		time.sleep(3)
-		print("By that i mean that you should write https://www.google.com instead of something shortened")
-		time.sleep(3)
-		print("For example www.google.com is wrong, and so is https://google.com")
-		time.sleep(3)
-		print("If you write it wrong I will run into errors and halt")
+		print("\n You have to insert a link that I will start scraping from")
+		sleep(3)
+		print(" When you write the link you must write it whole")
+		sleep(3)
+		print(" By that i mean that you should write https://www.google.com instead of something shortened")
+		sleep(3)
+		print(" For example www.google.com is wrong, and so is https://google.com")
+		sleep(3)
+		print(" If you write it wrong I will run into errors and halt")
 
 	print("\r\nEnd of the help line\n")
 	return
@@ -337,14 +346,24 @@ def Help ():
 
 #Automode alert
 def AutoAlert ():
-	print("\nYou are about to atart automode, during that preiod, the program could wander anywhere over the internet, if")
-	print ("you say yes, you are taking all the responsibility on what happenes during that time, do you agree to that? (y/n)\n")
+	print(Fore.RED, end = '')
+	
+	print("\nWARNING:")
+	
+	print(Fore.GREEN, end = '')
+	
+	print(" You are about to atart automode, during that preiod, the program could wander anywhere over the internet, if")
+	print (" you say yes, you are taking all the responsibility on what happenes during that time, do you agree to that? (y/n)")
+	
+	print(Fore.GREEN, end = ' ')
+	
 	c = Question(0)
+	
 	if c == 1:
 		return 1
 	else:
 		print("\nSwitching to manual...\n")
-		time.sleep(0.5)
+		sleep(0.5)
 		return 0
 
 #Automode repeater
@@ -352,9 +371,15 @@ def Repeater ():
 	global repeat
 
 	print ("\nHow many links do you want the automode to visit?")
+	
+	print(Fore.YELLOW, end = ' ')
+
 	c = input()
 	c = c.strip()
 	c = c.lower()
+	
+	print(Fore.GREEN, end = '')
+
 	if c == 'help':
 		Help()
 		Repeater()
@@ -365,10 +390,15 @@ def Repeater ():
 
 #Yes/No pitanja
 def Question (mode):
+	print(Fore.YELLOW, end = ' ')
+
 	odg = str(input())
 	odg = odg.strip()
 	odg = odg.lower()
 	
+	print(Fore.GREEN, end = '')
+
+
 	#tip pitanja
 	#mode 0 = yes/no
 	#mode 1 = manual/auto
@@ -403,14 +433,18 @@ def Question (mode):
 		return f
 
 
-
 #--------------------------------------Program-------------------------------------------
 
+#pokretanje colorame
+init()
+
+#globalne varijable
 repeat = int(0)
 links = set({})
 
 #Brze ili fancy animacije
-print('\nToggle animations? (y/n)')
+print(Fore.GREEN, '\nToggle animations? (y/n)')
+print(Style.DIM, end = '')
 animation = Question(0)
 
 #Animacija učitavanja konzole
@@ -420,6 +454,7 @@ line_breaker(80)
 
 #Odabir načina rada
 print("Do you want the program to run the program manually, or in automode? (m/a)")
+
 automode = Question(1)
 
 if automode == 1:
