@@ -1,5 +1,5 @@
 # WebCrawler
-A webcrawlig tool
+A webcrawling tool
 
  The program is capable of looking at any url you give it and scraping all the links on that page and keeps scraping links on other pages it found.
 
