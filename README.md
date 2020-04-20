@@ -1,13 +1,8 @@
 # WebCrawler
-A webcrawlig tool (obviously)
+A webcrawlig tool
 
  The program is capable of looking at any url you give it and scraping all the links on that page and keeps scraping links on other pages it found.
 
-*Last update:*
- Fixed a milion bugs and made automode fully functional 
-
-*Next update:*
- Making the program look a bit nicer and making it capable of avoiding non existing websites
 
 *Very important stuff:*
  This program is open source so you can use it as a platform for further modification
@@ -19,6 +14,8 @@ More on that here: https://benbernardblog.com/web-scraping-and-crawling-are-perf
  The program requies a few packages, to install them, open command prompt and type: 
 
 pip install bs4
+
+pip install colorama
 
 pip install urllib3
 
