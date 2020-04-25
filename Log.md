@@ -25,3 +25,7 @@
 -Console colour added
 -Bug fixes
 -UI enhancment
+
+*V 1.1*
+
+-Code simplified
