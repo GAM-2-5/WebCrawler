@@ -110,18 +110,18 @@ def url_picker ():
 				
 			else:
 				line_breaker(40)
-				print("\nWant to see the list? (y/n)")
+				printer("\nWant to see the list? (y/n)")
 				c = Question(0)
 			
 				if c == 1:
-					print("\nLinks:\n")
+					printer("\nLinks:")
 					for link in links:
 						print("   ", link)
 			
 				else:
 					pass
 			
-				print("\nProceed? (y/n)")
+				printer("\nProceed? (y/n)")
 				c = Question(0)
 			
 				if c == 1:
@@ -129,13 +129,13 @@ def url_picker ():
 					return
 			
 				else:
-					print ("\nSwitch to manual? (y/n)")
+					printer("\nSwitch to manual? (y/n)")
 					a = Question(0)
 					
 					if a == 1:
-						print("\nConverting the list...")
+						printer("\nConverting the list...")
 						sleep(0.2)
-						print("Switching to manual... \n")
+						printer("Switching to manual... \n")
 						sleep(0.2)
 						
 						automode = 0
@@ -156,16 +156,16 @@ def url_picker ():
 
 		lista = list(links)
 		i = 0
-		print("Links:")
+		printer("Links:")
 		for link in links:
 			i += 1
 			print(i,": ", link)
 		
-		print("\nProceed? (y/n)")
+		printer("\nProceed? (y/n)")
 		
 		c = Question(0)
 		if c == 1:
-			print("\nEnter the number of a link you want me to go to next")
+			printer("\nEnter the number of a link you want me to go to next")
 			print(Fore.YELLOW, end = ' ')
 			my_url = lista[int(input())-1]
 			print(Fore.GREEN, end = '')
@@ -173,12 +173,12 @@ def url_picker ():
 			return
 		
 		else:
-			print ("\nSwitch to automode? (y/n)")
+			printer("\nSwitch to automode? (y/n)")
 			a = Question(0)
 			if a == 1:
-				print("\nConverting the list...")
+				printer("\nConverting the list...")
 				sleep(0.7)
-				print("Switching to automode...\n")
+				printer("Switching to automode...\n")
 
 				line_breaker(40)
 				Repeater()
@@ -207,6 +207,7 @@ def url_shortcut (tekst):
 	tekst.lower()
 	
 	if tekst.lower() == "help":
+		print(Fore.GREEN, end = '')
 		Help()
 		tekst = "0"
 
@@ -226,7 +227,7 @@ def url_inserter ():
 	line_breaker(40)
 
 	#Unos i obrada linka
-	print("Insert URL:\n")
+	printer("Insert URL:\n")
 	print(Fore.RED, end = ' ')
 
 	tekst = str(input())
@@ -239,7 +240,6 @@ def url_inserter ():
 		tekst = url_inserter()
 	
 	return tekst
-
 
 #--------------------------------------Animation-----------------------------------------
 
@@ -261,15 +261,6 @@ def console_dots (duration):
 			for x in range(3):
 				print('.', end = '', flush = True)
 				sleep (1/3)
-			'''
-			Dio animacije koji mi se prije sviđao ali sad smatram da je nepotrebno loš
-
-			for x in range(3):
-				clear()
-				print('.' * (2 - x), end = '', flush = True)
-				sleep(1/3)
-			'''
-
 
 #Clear screen funkcija
 def clear(): 
@@ -283,64 +274,74 @@ def clear():
 
 #Crta
 def line_breaker (duljina):
-	global animation
-
+	'''
 	print(Style.RESET_ALL)
 	print(Fore.GREEN)
-
-	sleeptime = 0.000625 * duljina * animation
-
-	for x in range(duljina):
-		print('-', end = '', flush = True)
-		sleep(sleeptime)
+	'''
+	print("\n")
+	linija = '-' * duljina
+	printer(linija)
 	
-	print(Style.DIM, "\n")
+	#print(Style.DIM, end = '')
+	print("\n")
 
+#Ispisivanje teksta u stilu
+def printer (tekst):
+	global animation
+
+	for slovo in tekst:
+		print(slovo, end = '', flush = True)
+		sleep (0.01 * animation)
+
+	print ("")
 
 #---------------------------------------Tekst------------------------------------------
 
+#Čitač enkriptiranih datoteka
+def FileRead (filename):
+	filename = "Speech/" + filename + ".petar"
+	r = open(filename, "r")
+	sentence = ""
+
+	#dekripcija
+	for row in r:
+		for letter in row:
+			if letter == '':
+				printer(sentence)
+				sentence = ""
+			
+			else:
+				sentence += chr(ord(letter) - 5)
+		
+		printer(sentence)
+
 #Help function
 def Help ():
-	console_dots(3.5)
 	line_breaker(40)
 	
-	print("\r\nHelp tab:")
-	print("\nChoose an option")
-	
-	print("0: Automode and Manual mode explained")
-	print("1: URL inserting help")
-	
-	print("\nChoose an option:")
+	printer("\r\nHelp tab:")
+	printer("0: Automode and Manual mode explained")
+	printer("1: URL inserting help")
+	printer("\nChoose an option:")
 
 	print(Fore.YELLOW, end = ' ')
+	
 	mode = int(input())
+	
 	print(Fore.GREEN, end = '')
 
-	print("\nLoading...")
+	printer("\nLoading...")
 	sleep(1.5)
 
+	file = ""
 	if mode == 0:
-		print("\n Manual mode allows you to choose which links I will go to while scraping")
-		sleep(2)
-		print(" Auto mode makes me run autonomously, and choose randomly which links i want to go to")
-		sleep(2.5)
-		print(" You can change between modes whenever you want, by telling me to stop")
-		sleep(2)
-		print(" After you do that it will ask you if you want to switch to the other mode")
-		sleep(2.5)
+		file = "He0"
 
 	if mode == 1:
-		print("\n You have to insert a link that I will start scraping from")
-		sleep(3)
-		print(" When you write the link you must write it whole")
-		sleep(3)
-		print(" By that i mean that you should write https://www.google.com instead of something shortened")
-		sleep(3)
-		print(" For example www.google.com is wrong, and so is https://google.com")
-		sleep(3)
-		print(" If you write it wrong I will run into errors and halt")
+		file = "He1"
 
-	print("\r\nEnd of the help line\n")
+	FileRead(file)
+	printer("\r\nEnd of the help line\n")
 	return
 
 
@@ -348,13 +349,12 @@ def Help ():
 def AutoAlert ():
 	print(Fore.RED, end = '')
 	
-	print("\nWARNING:")
+	printer("\nWARNING:")
 	
 	print(Fore.GREEN, end = '')
-	
-	print(" You are about to atart automode, during that preiod, the program could wander anywhere over the internet, if")
-	print (" you say yes, you are taking all the responsibility on what happenes during that time, do you agree to that? (y/n)")
-	
+
+	FileRead("Al0")
+
 	print(Fore.GREEN, end = ' ')
 	
 	c = Question(0)
@@ -362,7 +362,7 @@ def AutoAlert ():
 	if c == 1:
 		return 1
 	else:
-		print("\nSwitching to manual...\n")
+		printer("\nSwitching to manual...\n")
 		sleep(0.5)
 		return 0
 
@@ -370,7 +370,7 @@ def AutoAlert ():
 def Repeater ():
 	global repeat
 
-	print ("\nHow many links do you want the automode to visit?")
+	printer("\nHow many links do you want the automode to visit?")
 	
 	print(Fore.YELLOW, end = ' ')
 
@@ -425,9 +425,9 @@ def Question (mode):
 		print("\n")
 		if odg == "help":
 			Help()
-			print("Now please choose ", option1, " or ", option2)
+			printer("Now please choose " + option1 + " or " + option2)
 		else:
-			print("Please choose ", option1, " or ", option2)
+			printer("Please choose " + option1 + " or " + option2)
 
 		f = Question(mode)
 		return f
@@ -441,10 +441,11 @@ init()
 #globalne varijable
 repeat = int(0)
 links = set({})
+animation = 0
 
 #Brze ili fancy animacije
 print(Fore.GREEN, '\nToggle animations? (y/n)')
-print(Style.DIM, end = '')
+#print(Style.DIM, end = '')
 animation = Question(0)
 
 #Animacija učitavanja konzole
@@ -453,7 +454,7 @@ clear()
 line_breaker(80)
 
 #Odabir načina rada
-print("Do you want the program to run the program manually, or in automode? (m/a)")
+printer("Do you want the program to run the program manually, or in automode? (m/a)")
 
 automode = Question(1)
 
