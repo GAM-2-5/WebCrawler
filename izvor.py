@@ -12,7 +12,10 @@ import random
 #funkcija koja će biti korištena za ekstrakciju linka
 def url_extractor (my_url):
 	global links
-	
+	global visited_links_set
+	global visited_links_list
+
+
 	secure = ""    #dio linka sa http ili https
 	source = ""    #source link (tipa www.google.com)
 	pagedown = ""  #link jednu stranicu ispod trenutnog linka
@@ -41,7 +44,8 @@ def url_extractor (my_url):
 		elif cnt > 2:
 			pagedown += letter
 
-	links.add(secure + "//" + source)
+	visited_links_set.add(secure + "//" + source)
+	visited_links_list.append(secure + "//" + source)
 
 	#Skidanje informacija sa stranice
 	uClient = uReq(my_url)
@@ -93,61 +97,51 @@ def url_extractor (my_url):
 def url_picker ():
 	global automode
 	global repeat
+	global visited_links_list
+	global visited_links_set
 
 	#Za automode
 	if automode == 1:
-		#Odabiranje nasumičnog linka
-		tekst = random.choice(tuple(links))
-		my_url = str(tekst)
+		my_url = url_manager()
+	
+		if repeat > 0:
+			repeat -= 1
+			url_extractor(my_url)
+			
+		else:
+			line_breaker(40)
+			printer("\nWant to see the list? (y/n)")
+			c = Question(0)
 		
-		#provjera postojanja
-		postoji = url_checker(my_url)
+			if c == 1:
+				printer("\nLinks:")
+				for link in links:
+					print("   ", link)
 		
-		if postoji == 1:
-			if repeat > 0:
-				repeat -= 1
+			printer("\nProceed? (y/n)")
+			c = Question(0)
+		
+			if c == 1:
 				url_extractor(my_url)
-				
+				return
+		
 			else:
-				line_breaker(40)
-				printer("\nWant to see the list? (y/n)")
-				c = Question(0)
-			
-				if c == 1:
-					printer("\nLinks:")
-					for link in links:
-						print("   ", link)
-			
+				printer("\nSwitch to manual? (y/n)")
+				a = Question(0)
+				
+				if a == 1:
+					printer("\nConverting the list...")
+					sleep(0.2)
+					printer("Switching to manual... \n")
+					sleep(0.2)
+					
+					automode = 0
+					url_picker()
+					return
+				
 				else:
 					pass
-			
-				printer("\nProceed? (y/n)")
-				c = Question(0)
-			
-				if c == 1:
-					url_extractor(my_url)
-					return
-			
-				else:
-					printer("\nSwitch to manual? (y/n)")
-					a = Question(0)
-					
-					if a == 1:
-						printer("\nConverting the list...")
-						sleep(0.2)
-						printer("Switching to manual... \n")
-						sleep(0.2)
-						
-						automode = 0
-						url_picker()
-						return
-					
-					else:
-						pass
-					return
-		else:
-			url_picker()
-			return
+				return
 
 	#Bez automodea
 	else:
@@ -194,13 +188,37 @@ def url_picker ():
 
 #----------------------------------------Misc--------------------------------------------
 
+#Odabir linka
+def url_manager ():
+	global links
+	global visited_links_list
+	global visited_links_set
+
+	#Odabiranje nasumičnog linka
+	tekst = random.choice(tuple(links))
+	my_url = str(tekst)
+	
+	#provjera postojanja
+	postoji = url_checker(my_url)
+	if postoji == 1:
+		if my_url in visited_links_set == True:
+			my_url = url_manager()
+	else:
+		my_url = url_manager()
+	
+	return my_url
+
 #Provjera linka
 def url_checker (link):
-	request = requests.get(link)
-	if request.status_code < 400:
-		return 1  
-	else:
+	try:
+		request = requests.head(link)
+		if request.status_code < 400:
+			return 1  
+		else:
+			return 2
+	except:
 		return 0
+	
 
 #Funkcija za kratice (dodavat ću ih kasnije, ovo su sada samo da nemoram ja svaki put pisat cijeli link dok testiram)
 def url_shortcut (tekst):
@@ -234,11 +252,21 @@ def url_inserter ():
 	tekst = tekst.strip()
 	tekst = url_shortcut(tekst)
 
+	postoji = url_checker(tekst)
+
+	if postoji == 0:
+		print(" Page does not exist")
+		tekst = "0"
+	
+	elif postoji == 2:
+		print(" Page unavailable")
+		tekst = "0"
+	
 	print(Fore.GREEN, end = '')
 
 	if tekst == "0":
 		tekst = url_inserter()
-	
+
 	return tekst
 
 #--------------------------------------Animation-----------------------------------------
@@ -283,7 +311,7 @@ def line_breaker (duljina):
 	printer(linija)
 	
 	#print(Style.DIM, end = '')
-	print("\n")
+	print("")
 
 #Ispisivanje teksta u stilu
 def printer (tekst):
@@ -295,7 +323,11 @@ def printer (tekst):
 
 	print ("")
 
-#---------------------------------------Tekst------------------------------------------
+#---------------------------------------Konzola------------------------------------------
+
+
+
+#----------------------------------------Tekst-------------------------------------------
 
 #Čitač enkriptiranih datoteka
 def FileRead (filename):
@@ -441,6 +473,8 @@ init()
 #globalne varijable
 repeat = int(0)
 links = set({})
+visited_links_set = set({})
+visited_links_list = list([])
 animation = 0
 
 #Brze ili fancy animacije
