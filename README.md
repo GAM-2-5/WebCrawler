@@ -27,11 +27,6 @@ pip install requests
 
 *Switching between modes:*
  You can switch between auto and manual mode. 
-When a program asks you if you want to proceed you have to tell it 'no' and it will ask if you want to switch to the other mode, if you say yes it will show you the same list again and ask you to proceed, and if you say no it will end the program. Stopping automode is impossible for now.
-
-
-*Unexpected errors:*
- A program can suddenly halt and report an error, that is most likely due to the fact that some websites are locked and when you try to access those certain websites it will report an error, you can see more details on the error in the last line the program will output. 
-
+When a program asks you if you want to proceed you have to tell it 'no' and it will ask if you want to switch to the other mode, if you say yes it will show you the same list again and ask you to proceed, and if you say no it will end the program.
 
 Thats all for now folks, enjoy
