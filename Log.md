@@ -29,3 +29,9 @@
 *V 1.1*
 
 -Code simplified
+
+*V 1.2*
+
+-Ability to avoid visited links
+-Ability to avoid non existing and unavailable websites
+
