@@ -19,8 +19,6 @@ pip install colorama
 
 pip install urllib3
 
-pip install requests
-
 
 *How to run a program?*
  The program is made to guide you trough using it, if something is not clear about what you have to do or how it works, type help anywhere and it will tell you what you want to know
