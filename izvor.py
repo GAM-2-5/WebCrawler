@@ -3,9 +3,7 @@ from colorama import init, Fore, Style        #pip
 from bs4 import BeautifulSoup as Soup         #pip
 from os import system, name 
 from time import sleep
-import requests                               #pip
 import random
-
 
 #----------------------------------------Url--------------------------------------------
 
@@ -14,7 +12,6 @@ def url_extractor (my_url):
 	global links
 	global visited_links_set
 	global visited_links_list
-
 
 	secure = ""    #dio linka sa http ili https
 	source = ""    #source link (tipa www.google.com)
@@ -97,8 +94,7 @@ def url_extractor (my_url):
 def url_picker ():
 	global automode
 	global repeat
-	global visited_links_list
-	global visited_links_set
+	global links
 
 	#Za automode
 	if automode == 1:
@@ -109,101 +105,72 @@ def url_picker ():
 			url_extractor(my_url)
 			
 		else:
-			line_breaker(40)
-			printer("\nWant to see the list? (y/n)")
-			c = Question(0)
-		
-			if c == 1:
-				printer("\nLinks:")
-				for link in links:
-					print("   ", link)
-		
-			printer("\nProceed? (y/n)")
-			c = Question(0)
-		
-			if c == 1:
-				url_extractor(my_url)
-				return
-		
+			printer("\nAutomode has finished")
+
+			odg = Console(2)
+			
+			if odg == "-s":
+				url_picker()
+
 			else:
-				printer("\nSwitch to manual? (y/n)")
-				a = Question(0)
-				
-				if a == 1:
-					printer("\nConverting the list...")
-					sleep(0.2)
-					printer("Switching to manual... \n")
-					sleep(0.2)
-					
-					automode = 0
-					url_picker()
-					return
-				
-				else:
-					pass
-				return
+				repeat = int(odg)
+				url_extractor (my_url)
 
 	#Bez automodea
 	else:
-		#Odabiranje linka
-		line_breaker(40)
-
+		printer("\nLinks:\n")
 		lista = list(links)
 		i = 0
-		printer("Links:")
-		for link in links:
+		for x in lista:
 			i += 1
-			print(i,": ", link)
+			print (i, " ", x)
 		
-		printer("\nProceed? (y/n)")
-		
-		c = Question(0)
-		if c == 1:
-			printer("\nEnter the number of a link you want me to go to next")
-			print(Fore.YELLOW, end = ' ')
-			my_url = lista[int(input())-1]
-			print(Fore.GREEN, end = '')
-			url_extractor (my_url)
-			return
-		
-		else:
-			printer("\nSwitch to automode? (y/n)")
-			a = Question(0)
-			if a == 1:
-				printer("\nConverting the list...")
-				sleep(0.7)
-				printer("Switching to automode...\n")
+		my_url = url_manager()
 
-				line_breaker(40)
-				Repeater()
-
-				automode = 1
-				url_picker()
-				return
-			
-			else:
-				pass
-			return
-
+		url_extractor (my_url)
 
 #----------------------------------------Misc--------------------------------------------
 
 #Odabir linka
 def url_manager ():
 	global links
+	global automode
 	global visited_links_list
 	global visited_links_set
-
-	#Odabiranje nasumičnog linka
-	tekst = random.choice(tuple(links))
-	my_url = str(tekst)
 	
+	if automode == 1:
+		#Odabiranje nasumičnog linka
+		tekst = random.choice(tuple(links))
+		my_url = str(tekst)
+	
+	else:
+		odg = Console(1)
+		
+		if odg == "-s":
+			url_picker()
+
+		else:
+			goto = int(odg)
+			lista = list(links)
+			my_url = lista[goto - 1]
+
 	#provjera postojanja
 	postoji = url_checker(my_url)
 	if postoji == 1:
 		if my_url in visited_links_set == True:
+			if automode == 0:
+				print(Fore.RED, end = '')
+				printer(" Link already visited")
+				print(Fore.GREEN, end = '')
+			
 			my_url = url_manager()
+	
 	else:
+		if automode == 0:
+			print(Fore.RED, end = '')
+			printer(" Link unavailable")
+			print(Fore.GREEN, end = '')
+		
 		my_url = url_manager()
 	
 	return my_url
@@ -211,11 +178,9 @@ def url_manager ():
 #Provjera linka
 def url_checker (link):
 	try:
-		request = requests.head(link)
-		if request.status_code < 400:
-			return 1  
-		else:
-			return 2
+		uReq(link)
+		return 1
+
 	except:
 		return 0
 	
@@ -286,6 +251,7 @@ def console_dots (duration):
 		for y in range(length):
 			clear()
 			sleep(0.5)
+			
 			for x in range(3):
 				print('.', end = '', flush = True)
 				sleep (1/3)
@@ -302,15 +268,11 @@ def clear():
 
 #Crta
 def line_breaker (duljina):
-	'''
-	print(Style.RESET_ALL)
-	print(Fore.GREEN)
-	'''
 	print("\n")
-	linija = '-' * duljina
-	printer(linija)
 	
-	#print(Style.DIM, end = '')
+	linija = '-' * duljina
+	
+	printer(linija)
 	print("")
 
 #Ispisivanje teksta u stilu
@@ -325,11 +287,190 @@ def printer (tekst):
 
 #---------------------------------------Konzola------------------------------------------
 
+def Console (mode):
+	global links
+	global started
+	global automode
+	global visited_links_set
+	global visited_links_list
 
+	#Mode:
+	#0 - Nothing
+	#1 - Manual mode proceed
+	#2 - Automode proceed
+	#3 - Literally nothing
 
-#----------------------------------------Tekst-------------------------------------------
+	if mode == 0:
+		printer("\nWhat next? (type '-h' for options)")
 
-#Čitač enkriptiranih datoteka
+	if mode == 1:
+		printer("\nWhat link is next?")
+
+	if mode == 2:
+		printer("\nHow many links do I go to next?")
+
+	print(Fore.YELLOW, end = ' ')
+
+	odg = str(input())
+	odg = odg.strip()
+	odg = odg.lower()
+
+	print(Fore.GREEN, end = '')
+
+	if odg == "" or odg == "-":
+		print(Style.DIM, end = '')
+		
+		printer (" Insert something lmao")
+		
+		print(Style.RESET_ALL, end = '')
+		print(Fore.GREEN, end = '')
+	
+		odg = Console(mode)
+
+	elif odg[0] == "-":
+		if odg == "-help" or odg == "-h":
+			Help()
+		
+		elif started != 0:	
+			if odg == "-clear" or odg == "-cls":
+				clear()
+			
+			elif odg[0:2] == "-l":
+				if odg == "-list reset" or odg =="-lr":
+					printer("\nAre you sure you want to clear the list?")
+					
+					a = Question(0)
+					if a == 1:
+						links.clear()
+
+					printer("List cleared!\n")
+
+				elif odg == "-list save" or odg == "-ls":
+					FileSave("scraped", "save")
+
+				elif odg == "-list print" or odg == "-lp":
+					FileSave("scraped", "print")
+
+				elif odg == "-list load" or odg == "-ll":
+					FileLoad("scraped")
+
+				elif odg == "-list" or odg == "-l":			
+					i = 0
+					printer("\nList of links:")
+					sleep(1)
+
+					if automode == 0:
+						i = 0
+						for x in links:
+							i += 1
+							print (i, " ", x)
+
+					if automode == 1:
+						for x in links:
+							print (" ", x)
+			
+			elif odg[0:2] == "-v": 
+				if odg == "-visited" or odg == "-v":
+					i = 0
+					printer("\nList of visited links:")
+					sleep(1)
+					if automode == 0:
+						i = 0
+						for x in visited_links_list :
+							i += 1
+							print (i, " ", x)
+
+					if automode == 1:
+						for x in visited_links_list :
+							print (" ", x)
+
+				elif odg == "-visited save" or odg == "-vs":
+					FileSave("visited", "save")
+
+				elif odg == "-visited print" or odg == "-vp":
+					FileSave("visited", "print")
+
+				elif odg == "-visited load" or odg == "-vl":
+					FileLoad("visited")
+
+				elif odg == "-visited reset" or odg == "-vr":
+					printer("\nAre you sure you want to clear the visited links?")
+					
+					a = Question(0)
+					if a == 1:
+						visited_links_set.clear()
+						visited_links_list.clear()
+
+			elif odg == "-mode" or odg == "-m":
+				if automode == 1:
+					printer(" Automode running")
+				else:
+					printer(" Manual mode running")
+
+			elif odg == "-switch" or odg == "-s":
+				Repeater()
+				automode = 1 - automode
+				printer("Modes switched")
+				
+				if mode == 1 or mode == 2:
+					return "-s"
+
+			elif odg == "-stop" or odg == "-exit" or odg == "-halt" or odg == "-x":
+				Quit()
+			
+			else:
+				print(Fore.RED, end = '')
+				printer(" " + odg + " is not a recognizable command")
+				print(Fore.GREEN, end = '')
+
+		else:
+			print(Fore.RED, end = '')
+			printer(" " + odg + " cannot be run yet")
+			print(Fore.GREEN, end = '')
+
+		odg = Console(mode)
+
+	elif mode == 1:
+		goto = int(0)
+		
+		try:
+			goto = int(odg[len(odg)-1])
+			return goto
+		
+		except:
+			print(Fore.RED, end =' ')
+			printer(odg + " is not a number")
+			print(Fore.GREEN, end = '')
+			
+			odg = Console(mode)
+			return odg
+	
+	elif mode == 2:
+		goto = int(0)
+		
+		try:
+			goto = int(odg[len(odg)-1])
+			return goto
+		
+		except:
+			print(Fore.RED, end =' ')
+			printer(odg + " is not a number")
+			print(Fore.GREEN, end = '')
+			
+			odg = Console(mode)
+			return odg
+
+	return odg
+
+#Funkcija za izlazak
+def Quit ():
+	print ("\nExiting...")
+	sleep (0.5)
+	raise SystemExit
+
+#----------------------------------------Files-------------------------------------------
+
+#Čitač datoteka
 def FileRead (filename):
 	filename = "Speech/" + filename + ".petar"
 	r = open(filename, "r")
@@ -347,13 +488,132 @@ def FileRead (filename):
 		
 		printer(sentence)
 
+#Učitavač datokeka
+def FileLoad (data):
+	global links
+	global visited_links_set
+	global visited_links_list
+
+	printer(" File name?")
+	print(Fore.YELLOW, end = ' ')
+
+	filename = str(input())
+	filename = filename.strip()
+
+	print(Fore.GREEN, end = '')
+
+	if data == "scraped":
+		filename = "Saves/Scraped/" + filename + ".petar"
+	
+	else:
+		filename = "Saves/Visited/" + filename + ".petar"
+
+	try:
+		r = open(filename, "r")
+		#dekripcija
+		sentence = ""
+		for row in r:
+			for letter in row:
+				if letter == '':
+					if data == "scraped":
+						links.add(sentence)	
+					else:
+						visited_links_set.add(sentence)
+					
+					sentence = ""
+				
+				else:
+					sentence += chr(ord(letter) - 5)
+			
+		if data == "scraped":
+			links.add(sentence)
+
+		else:
+			visited_links_set.add(sentence)	
+		
+		visited_links_list = list(visited_links_set)
+		printer(" Loaded")
+
+	except:
+		print(Fore.RED, end = ' ')
+		printer(filename + " does not exist")	
+		print(Fore.GREEN, end = '')
+		FileLoad(data)
+
+
+#Spremač datoteka
+def FileSave (data, mode):
+	global links
+	global visited_links_list
+
+	if mode == "print":
+		printer(" File name?")
+	else:
+		printer(" Save name?")
+	
+	print(Fore.YELLOW, end = ' ')
+
+	filename = str(input())
+	filename = filename.strip()
+
+	print(Fore.GREEN, end = '')
+
+	if mode == "save":
+		if data == "scraped":
+			filename = "Saves/Scraped/" + filename + ".petar"
+		else:
+			filename = "Saves/Visited/" + filename + ".petar"
+
+	else:
+		filename = filename + ".txt" 
+
+
+	if mode == "save":
+		a = open(filename, "a")
+		new_row = ""
+		
+		if data == "scraped":
+			#enkripcija
+			for link in links:
+			    new_row = ""
+			    for letter in link:
+			        new_row += chr(ord(letter) + 5)
+			    
+			    a.write(new_row)
+			    a.write('')
+
+		else:
+			#enkripcija
+			for link in visited_links_list:
+			    new_row = ""
+			    for letter in link:
+			        new_row += chr(ord(letter) + 5)
+			    
+			    a.write(new_row)
+			    a.write('')
+
+	else:
+		w = open(filename, "w")
+		
+		if data == "scraped":
+			for link in links:
+				w.write(link)
+				w.write('\n')
+		
+		else:
+			for link in visited_links_list:
+				w.write(link)
+				w.write('\n')
+
+	printer("\n Done!")
+#----------------------------------------Tekst-------------------------------------------
+
 #Help function
 def Help ():
 	line_breaker(40)
 	
 	printer("\r\nHelp tab:")
-	printer("0: Automode and Manual mode explained")
-	printer("1: URL inserting help")
+	FileRead("He")
 	printer("\nChoose an option:")
 
 	print(Fore.YELLOW, end = ' ')
@@ -367,14 +627,17 @@ def Help ():
 
 	file = ""
 	if mode == 0:
-		file = "He0"
+		return
 
-	if mode == 1:
-		file = "He1"
+	if mode in [1,2,3,4]:
+		file = "He" + str(mode)
+		FileRead(file)
+		printer("\r\nEnd of the help line\n")
 
-	FileRead(file)
-	printer("\r\nEnd of the help line\n")
-	return
+	else:
+		printer("\n" + str(mode) +" is not a valid option")
+
+	Help()
 
 
 #Automode alert
@@ -393,6 +656,7 @@ def AutoAlert ():
 	
 	if c == 1:
 		return 1
+	
 	else:
 		printer("\nSwitching to manual...\n")
 		sleep(0.5)
@@ -422,14 +686,7 @@ def Repeater ():
 
 #Yes/No pitanja
 def Question (mode):
-	print(Fore.YELLOW, end = ' ')
-
-	odg = str(input())
-	odg = odg.strip()
-	odg = odg.lower()
-	
-	print(Fore.GREEN, end = '')
-
+	odg = Console(3)
 
 	#tip pitanja
 	#mode 0 = yes/no
@@ -476,10 +733,10 @@ links = set({})
 visited_links_set = set({})
 visited_links_list = list([])
 animation = 0
+started = 0
 
 #Brze ili fancy animacije
 print(Fore.GREEN, '\nToggle animations? (y/n)')
-#print(Style.DIM, end = '')
 animation = Question(0)
 
 #Animacija učitavanja konzole
@@ -499,6 +756,7 @@ if automode == 1:
 	Repeater()
 
 tekst = url_inserter()
+started = 1
 url_extractor(tekst)
 
 #-------------------------------------------------------------------------------------
