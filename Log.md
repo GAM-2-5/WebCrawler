@@ -35,3 +35,8 @@
 -Ability to avoid visited links
 -Ability to avoid non existing and unavailable websites
 
+*V 1.3*
+
+-Fixed major bugs
+-Console added
+-Help enhanced
