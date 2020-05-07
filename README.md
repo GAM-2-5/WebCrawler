@@ -1,7 +1,7 @@
 # WebCrawler
 A webcrawling tool
 
- The program is capable of looking at any url you give it and scraping all the links on that page and keeps scraping links on other pages it found.
+ The program is capable of looking at any url you give it and scraping all the links on that page and keeps scraping links on other pages it found. It can also search for specific info on the page that you give it.
 
 
 *Very important stuff:*
@@ -19,12 +19,11 @@ pip install colorama
 
 pip install urllib3
 
+pip install numpy
+
+pip install pillow
 
 *How to run a program?*
- The program is made to guide you trough using it, if something is not clear about what you have to do or how it works, type help anywhere and it will tell you what you want to know
+ The program is made to guide you trough using it, if something is not clear about what you have to do or how it works, type -help anywhere and it will tell you what you want to know
 
-*Switching between modes:*
- You can switch between auto and manual mode. 
-When a program asks you if you want to proceed you have to tell it 'no' and it will ask if you want to switch to the other mode, if you say yes it will show you the same list again and ask you to proceed, and if you say no it will end the program.
-
-Thats all for now folks, enjoy
+Thats all folks, enjoy
