@@ -40,3 +40,9 @@
 -Fixed major bugs
 -Console added
 -Help enhanced
+
+*V 1.4*
+
+-Added keyword search
+-Code simplified
+-Hopefully most of the bugs eliminated
